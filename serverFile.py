@@ -1,4 +1,5 @@
 from copyreg import pickle
+from cv2 import EVENT_MOUSEMOVE
 import socketio
 from requests import get
 import socket

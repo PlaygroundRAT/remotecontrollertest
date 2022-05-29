@@ -10,6 +10,8 @@ app = WSGIApp(sio)
 targets = []
 targetScreen = {}
 
+click = False
+
 @sio.event
 def connect(sid, environ, auth):
   print('connect ', sid)
@@ -37,15 +39,10 @@ def remoteReq(sid, data):
   sio.emit('remote start', room=data['target'])
 
   def clickEvent(event, x, y, flags, param):
+    global click
     if event == cv2.EVENT_LBUTTONUP:
-      if event == cv2.EVENT_MOUSEMOVE:
-        while event == cv2.EVENT_RBUTTONDOWN:
-          sio.emit('Drag', {
-          'x': (x/targetScreen['streamWidth']*100)*targetScreen['width']/100,
-          'y': (y/targetScreen['streamHeight']*100)*targetScreen['height']/100
-          }, room=data['target'])
-      else:
-        sio.emit('L click', {
+      click = False
+      sio.emit('L click', {
         'x': (x/targetScreen['streamWidth']*100)*targetScreen['width']/100,
         'y': (y/targetScreen['streamHeight']*100)*targetScreen['height']/100
       }, room=data['target'])
@@ -54,6 +51,15 @@ def remoteReq(sid, data):
         'x': (x/targetScreen['streamWidth']*100)*targetScreen['width']/100,
         'y': (y/targetScreen['streamHeight']*100)*targetScreen['height']/100
       }, room=data['target'])
+    elif event == cv2.EVENT_MOUSEMOVE:
+      if click == True:
+        sio.emit('Drag', {
+          'x1': (x/targetScreen['streamWidth']*100)*targetScreen['width']/100,
+          'y1': (y/targetScreen['streamHeight']*100)*targetScreen['height']/100
+        }, room=data['target'])
+    elif event == cv2.EVENT_LBUTTONDOWN:
+      
+  def 
       
 
   s=socket.socket(socket.AF_INET , socket.SOCK_DGRAM)
